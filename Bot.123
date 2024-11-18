@@ -1,0 +1,63 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+interface IERC20 {
+    function balanceOf(address account) external view returns (uint256);
+    function transfer(address recipient, uint256 amount) external returns (bool);
+    function approve(address spender, uint256 amount) external returns (bool);
+    function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);
+}
+
+interface IUniswapV2Router {
+    function swapExactTokensForTokens(
+        uint amountIn,
+        uint amountOutMin,
+        address[] calldata path,
+        address to,
+        uint deadline
+    ) external returns (uint[] memory amounts);
+0xDD338d44ef304D469f9294bFE1045a1e472Ef451}
+
+contract SnipingBot {
+    address public owner;
+
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Not authorized");
+        _;
+    }
+
+    constructor() {
+        owner 0xDD338d44ef304D469f9294bFE1045a1e472Ef451 = msg.sender;
+    }
+
+    function executeArbitrage(
+        address tokenIn,
+        address tokenOut,
+        uint amountIn,
+        uint amountOutMin,
+        address router,
+        address[] calldata path
+    ) external onlyOwner {
+        IERC20(tokenIn).approve(router, amountIn);
+
+        // Swap tokens
+        IUniswapV2Router(router).swapExactTokensForTokens(
+            amountIn,
+            amountOutMin,
+            path,
+            address(this),
+            block.timestamp
+        );
+    }
+
+    function withdrawToken(0xDD338d44ef304D469f9294bFE1045a1e472Ef451, uint amount) external onlyOwner {
+        IERC20(token).transfer(msg.sender, amount); 100
+    }
+
+    function withdrawEth() external onlyOwner {
+        payable(msg.sender).transfer(address(this).balance);
+    }
+
+    // Allow contract to receive ETH
+    receive(0xDD338d44ef304D469f9294bFE1045a1e472Ef451) external payable {}
+}
